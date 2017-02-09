@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,8 +38,9 @@ public class LoginActivity extends AppCompatActivity {
                 }else {
                     if (isEmailValid(eMail)) {
                         if (isPasswordValid(password)) {
-                            //Continue login here
-                            Toast.makeText(getApplicationContext(), "Email and pass are valid!", Toast.LENGTH_SHORT).show();
+                           String jsonString =  makeJsonString(eMail,password);
+                            new LoginAsyncTask(LoginActivity.this,jsonString).execute();
+
                         } else {
                             Toast.makeText(getApplicationContext(), "Password should be at least 6 characters long.", Toast.LENGTH_SHORT).show();
                         }
@@ -61,5 +65,21 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             return true;
         }
+    }
+    public String makeJsonString(String eMail, String pass){
+        JSONObject item = new JSONObject();
+
+        try {
+            item.put("email", eMail);
+            item.put("password",pass);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String jsonString = item.toString();
+        return jsonString;
+    }
+
+    public void continueLogin(String o) {
+
     }
 }
