@@ -17,6 +17,8 @@
         </activity>
         <activity android:name=".BlogListActivity" >
         </activity>
+        <activity android:name=".BlogDisplayActivity" >
+        </activity>
     </application>
 
 </manifest>
