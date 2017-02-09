@@ -29,11 +29,20 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String eMail = etEmail.getText().toString();
-                if (isEmailValid(eMail)){
-                    //Here goes other work with login...
-                    Toast.makeText(getApplicationContext(), "Email is valid!", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Email is not valid!", Toast.LENGTH_SHORT).show();
+                String password = etPassword.getText().toString();
+                if (eMail.matches("") || password.matches("")) {
+                    Toast.makeText(getApplicationContext(), "Enter your email and password!", Toast.LENGTH_SHORT).show();
+                }else {
+                    if (isEmailValid(eMail)) {
+                        if (isPasswordValid(password)) {
+                            //Continue login here
+                            Toast.makeText(getApplicationContext(), "Email and pass are valid!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Password should be at least 6 characters long.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Email should be in valid format.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -45,5 +54,12 @@ public class LoginActivity extends AppCompatActivity {
     public boolean isEmailValid(String eMailString){
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(eMailString);
         return matcher.find();
+    }
+    public boolean isPasswordValid(String passString){
+        if(passString.length()<6){
+            return false;
+        }else{
+            return true;
+        }
     }
 }
