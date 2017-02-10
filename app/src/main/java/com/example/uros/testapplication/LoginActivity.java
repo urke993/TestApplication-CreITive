@@ -1,5 +1,6 @@
 package com.example.uros.testapplication;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,11 +20,13 @@ public class LoginActivity extends AppCompatActivity {
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private EditText etEmail,etPassword;
     private Button btnLogin;
+    Session session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setTitle("Login");
+        session = new Session(this);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
@@ -79,7 +82,16 @@ public class LoginActivity extends AppCompatActivity {
         return jsonString;
     }
 
-    public void continueLogin(String o) {
+    public void continueLogin(HttpResponse o) {
+        if (!o.isSucess()){
+            Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();
+        }else{
+            session.setLoggedin(true);
+            Intent intent = new Intent("android.intent.action.BLOGLISTACTIVITY");
+            startActivity(intent);
+            finish();
+
+        }
 
     }
 }

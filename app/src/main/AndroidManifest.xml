@@ -16,8 +16,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".BlogListActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.BLOGLISTACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity android:name=".BlogDisplayActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.BLOGDISPLAYACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -26,13 +26,14 @@ public class LoginAsyncTask extends AsyncTask{
     public LoginAsyncTask(LoginActivity glavna,String jsonSting) {
         this.loginActivity = glavna;
         this.jsonString = jsonSting;
+
     }
     protected void onPreExecute() {
 
 
         dialog = new ProgressDialog(loginActivity);
         dialog.setCancelable(true);
-        dialog.setMessage("Sacekajte...");
+        dialog.setMessage("Loading...");
         dialog.show();
 
     }
@@ -43,7 +44,7 @@ public class LoginAsyncTask extends AsyncTask{
     protected Object doInBackground(Object[] params) {
 
         String urlString = "http://blogsdemo.creitiveapps.com:16427/login";//ovo je kada se vuce iz lokala(localhhost) preko wamp servera
-        String response = makeRequest(urlString,jsonString);
+        HttpResponse response = makeRequest(urlString,jsonString);
         return response;
     }
 
@@ -66,13 +67,14 @@ public class LoginAsyncTask extends AsyncTask{
                 }
             }
         };stoperica.start();
-        loginActivity.continueLogin((String) o);
+        loginActivity.continueLogin((HttpResponse) o);
     }
-    public static String makeRequest(String uri, String json) {
+    public static HttpResponse makeRequest(String uri, String json) {
         HttpURLConnection urlConnection;
         String url;
         String data = json;
         String result = null;
+        HttpResponse response = new HttpResponse();
         try {
             //Connect
             urlConnection = (HttpURLConnection) ((new URL(uri).openConnection()));
@@ -88,27 +90,43 @@ public class LoginAsyncTask extends AsyncTask{
             writer.write(data);
             writer.close();
             outputStream.close();
+
             int responseCode = urlConnection.getResponseCode();
 
-            //Read
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+            switch (responseCode){
+                case 200:
+                    //Read
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
 
-            String line = null;
-            StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    StringBuilder sb = new StringBuilder();
 
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
+                    while ((line = bufferedReader.readLine()) != null) {
+                        sb.append(line);
+                    }
+
+                    bufferedReader.close();
+
+                    result = sb.toString();
+                    response.setMessage(result);
+                    response.setSucess(true);
+
+                    break;
+                case 401:
+                    result = "Email or password incorect.";
+                    response.setMessage(result);
+                    response.setSucess(false);
+
+                    break;
             }
 
-            bufferedReader.close();
 
-            result = sb.toString();
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return response;
     }
 }
