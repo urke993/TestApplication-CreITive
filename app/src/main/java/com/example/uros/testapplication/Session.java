@@ -18,12 +18,17 @@ public class Session {
         editor = prefs.edit();
     }
 
-    public void setLoggedin(boolean logggedin){
+    public void setLoggedin(boolean logggedin,String token){
         editor.putBoolean("loggedInmode",logggedin);
+        editor.putString("loginToken", token);
         editor.commit();
     }
 
     public boolean loggedin(){
         return prefs.getBoolean("loggedInmode", false);
+
+    }
+    public String getToken(){
+        return prefs.getString("loginTaken","Token doesn't exists");
     }
 }

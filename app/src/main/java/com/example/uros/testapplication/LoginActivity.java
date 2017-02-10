@@ -3,6 +3,7 @@ package com.example.uros.testapplication;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private EditText etEmail,etPassword;
     private Button btnLogin;
-    Session session;
+    private Session session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,9 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
+        if (session.loggedin()){
+            session.setLoggedin(false,"Token doesn't exists");
+        }
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,10 +91,18 @@ public class LoginActivity extends AppCompatActivity {
         if (!o.isSucess()){
             Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();
         }else{
-            session.setLoggedin(true);
-            Intent intent = new Intent("android.intent.action.BLOGLISTACTIVITY");
-            startActivity(intent);
-            finish();
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(o.getMessage());
+                session.setLoggedin(true,jsonObject.getString("token"));
+                Intent intent = new Intent("android.intent.action.BLOGLISTACTIVITY");
+                startActivity(intent);
+                finish();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
 
         }
 
