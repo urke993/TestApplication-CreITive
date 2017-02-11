@@ -68,20 +68,10 @@ public class BlogListAsyncTask extends AsyncTask {
             bf.close();
 
             JSONArray jsonArray = new JSONArray(rezultat);
-
-            //kod za prolaz kroz jsonArray
-               /* int id;
-                String name="";
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-                  JSONObject row = jsonArray.getJSONObject(i);
-                  id = row.getInt("id_drzava");
-                  name = name + row.getString("naziv");
-                }*/
-            //HttpResponse res = new HttpResponse();
-            //res.setSucess(true);
-           // res.setMessage(rezultat);
-            return jsonArray;
+            HttpResponse res = new HttpResponse();
+            res.setSucess(true);
+            res.setMessage(rezultat);
+            return res;
 
 
         } catch (MalformedURLException e) {
@@ -99,6 +89,6 @@ public class BlogListAsyncTask extends AsyncTask {
     @Override
     protected void onPostExecute(Object o) {
 
-        glavna.fillListView((JSONArray) o);
+        glavna.fillListView((HttpResponse) o);
     }
 }

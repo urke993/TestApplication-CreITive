@@ -1,6 +1,7 @@
 package com.example.uros.testapplication;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,6 +38,9 @@ public class BlogListActivity extends AppCompatActivity {
     List<String> listOfBlogImageUrl = new ArrayList<>();
     List<String> listOfBlogDescription = new ArrayList<>();
 
+    List<Blog> listOfBlogs;
+    public Blog[] arrayOfBlogs;
+
     private Session session;
     private CustomListAdapter adapter;
     ListView blogList;
@@ -45,6 +49,7 @@ public class BlogListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blog_list);
         setTitle("Blog List");
+        listOfBlogs = new ArrayList<>();
         session = new Session(this);
         if (!session.loggedin()){
             finish();
@@ -54,56 +59,54 @@ public class BlogListActivity extends AppCompatActivity {
 
     }
 
-    public void fillListView(JSONArray o) {
-       /* if (!o.isSucess()){
+    public void fillListView(HttpResponse o) {
+        if (!o.isSucess()){
             Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();
-        }else{*/
+        }else{
             JSONArray jsonBlogArray = null;
 
             try {
-                jsonBlogArray = o;
+                jsonBlogArray = new JSONArray(o.getMessage());
                 for (int i = 0; i < jsonBlogArray.length(); i++) {
                     JSONObject jsonRowObject = jsonBlogArray.getJSONObject(i);
                     int id = jsonRowObject.getInt("id");
                     String idStr = Integer.toString(id);
-                    listOfBlogId.add(idStr);
-                    listOfBlogTitle.add(jsonRowObject.getString("title"));
-                    listOfBlogImageUrl.add(jsonRowObject.getString("image_url"));
-                    listOfBlogDescription.add(jsonRowObject.getString("description"));
+                    String title = jsonRowObject.getString("title");
+                    String imageUrl = jsonRowObject.getString("image_url");
+                    String description = jsonRowObject.getString("description");
+
+                    Blog newBlog =new Blog(idStr,title,imageUrl,description);
+                    listOfBlogs.add(newBlog);
+
+                    arrayOfBlogs = listOfBlogs.toArray(new Blog[listOfBlogs.size()]);
+
+                    adapter = new CustomListAdapter(this, arrayOfBlogs);
+
+                    blogList.setAdapter(adapter);
+
 
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            arrayOfBlogId = listOfBlogId.toArray(new String[listOfBlogId.size()]);
-            arrayOfBlogTitle = listOfBlogTitle.toArray(new String[listOfBlogTitle.size()]);
-            arrayOfBlogImageUrl = listOfBlogImageUrl.toArray(new String[listOfBlogImageUrl.size()]);
-            arrayOfBlogDescription = listOfBlogDescription.toArray(new String[listOfBlogDescription.size()]);
-           // adapter = new CustomListAdapter(this, arrayOfBlogId,arrayOfBlogTitle,arrayOfBlogImageUrl,arrayOfBlogDescription);
-
-           // blogList.setAdapter(adapter);
 
 
-       // }
+
+       }
     }
-    public class CustomListAdapter extends ArrayAdapter<String> {
+    public class CustomListAdapter extends ArrayAdapter<Blog> {
 
         private final Activity context;
-        private final String[] arrayOfBlogId;
-        private final String[] arrayOfBlogTitle;
-        private final String[] arrayOfBlogImageUrl;
-        private final String[] arrayOfBlogDescription;
+        private final Blog[] arrayOfBlogs;
 
-        public CustomListAdapter(Activity context, String[] arrayOfBlogId, String[] arrayOfBlogTitle,String[] arrayOfBlogImageUrl, String[] arrayOfBlogDescription) {
-            super(context, R.layout.blog_list_cell, arrayOfBlogTitle);
+
+        public CustomListAdapter(Activity context, Blog[] arrayOfBlogs) {
+            super(context, R.layout.blog_list_cell, arrayOfBlogs);
             // TODO Auto-generated constructor stub
 
             this.context=context;
-            this.arrayOfBlogId=arrayOfBlogId;
-            this.arrayOfBlogTitle=arrayOfBlogTitle;
-            this.arrayOfBlogImageUrl=arrayOfBlogImageUrl;
-            this.arrayOfBlogDescription=arrayOfBlogDescription;
+            this.arrayOfBlogs=arrayOfBlogs;
         }
 
         public View getView(int position,View view,ViewGroup parent) {
@@ -111,23 +114,20 @@ public class BlogListActivity extends AppCompatActivity {
             View rowView=inflater.inflate(R.layout.blog_list_cell, null, true);
 
             TextView txtTitle = (TextView) rowView.findViewById(R.id.tvBlogTitle);
-            TextView txtId = (TextView) findViewById(R.id.tvBlogId);
-            TextView txtDescription = (TextView) findViewById(R.id.tvBlogDescription);
-            ImageView imageView = (ImageView) rowView.findViewById(R.id.ivBlogImage);
-            Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.no_image);
-            try {
-                image = Ion.with(BlogListActivity.this).load(arrayOfBlogImageUrl[position]).withBitmap().asBitmap().get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            TextView txtDescription = (TextView) rowView.findViewById(R.id.tvBlogDescription);
+            Blog blog = arrayOfBlogs[position];
+
+
+            txtTitle.setText(blog.getTitle());
+            txtDescription.setText(Html.fromHtml(blog.getDesription()));
+            //Async task for downloading image
+            if (blog.getImage()!=null){
+                ImageView imageView = (ImageView) rowView.findViewById(R.id.ivBlogImage);
+                imageView.setImageBitmap(blog.getImage());
+            }else {
+                ImageLoader myImageLoader = new ImageLoader(BlogListActivity.this, blog, rowView);
+                myImageLoader.execute();
             }
-
-            txtTitle.setText(arrayOfBlogTitle[position]);
-            txtId.setText(arrayOfBlogId[position]);
-            txtDescription.setText(Html.fromHtml(arrayOfBlogDescription[position]));
-            imageView.setImageBitmap(image);
-
             return rowView;
 
 
