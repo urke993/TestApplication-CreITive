@@ -46,6 +46,8 @@ public class LoginAsyncTask extends AsyncTask{
         String urlString = "http://blogsdemo.creitiveapps.com:16427/login";//ovo je kada se vuce iz lokala(localhhost) preko wamp servera
         HttpResponse response = makeRequest(urlString,jsonString);
         return response;
+
+
     }
 
     //izlazni rezultat iz prethodne metode je ulaz u ovu metodu

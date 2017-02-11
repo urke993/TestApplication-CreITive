@@ -28,4 +28,12 @@
         android:id="@+id/tvBlogDescription"
         android:layout_below="@+id/ivBlogImage"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/tvBlogId"
+        android:layout_below="@+id/tvBlogDescription"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

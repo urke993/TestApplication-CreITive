@@ -29,6 +29,6 @@ public class Session {
 
     }
     public String getToken(){
-        return prefs.getString("loginTaken","Token doesn't exists");
+        return prefs.getString("loginToken","Token doesn't exists");
     }
 }
