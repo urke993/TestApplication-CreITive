@@ -1,6 +1,11 @@
 package com.example.uros.testapplication;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
@@ -13,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.StringReader;
+import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,14 +52,17 @@ public class LoginActivity extends AppCompatActivity {
                 }else {
                     if (isEmailValid(eMail)) {
                         if (isPasswordValid(password)) {
-                           String jsonString =  makeJsonString(eMail,password);
-                            new LoginAsyncTask(LoginActivity.this,jsonString).execute();
-
+                            if(isOnline()){
+                                String jsonString =  makeJsonString(eMail,password);
+                                new LoginAsyncTask(LoginActivity.this,jsonString).execute();
+                            }else{
+                                showAlertDialog("No Internet Connection","You are offline, please check your internet connection.");
+                            }
                         } else {
-                            Toast.makeText(getApplicationContext(), "Password should be at least 6 characters long.", Toast.LENGTH_SHORT).show();
+                            showAlertDialog("Invalid Password", "Password should be at least 6 characters long.");
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Email should be in valid format.", Toast.LENGTH_SHORT).show();
+                        showAlertDialog("Invalid Email","Email should be in valid format(example@example.com).");
                     }
                 }
             }
@@ -107,4 +116,25 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+    public void showAlertDialog(String title,String message){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+    }
+
 }

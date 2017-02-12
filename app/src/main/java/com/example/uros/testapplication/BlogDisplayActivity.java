@@ -5,11 +5,13 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.webkit.WebSettings.LayoutAlgorithm;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,8 +29,16 @@ public class BlogDisplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blog_display);
         setTitle("Blog Display");
-
         webView = (WebView) findViewById(R.id.webView);
+        webView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.TEXT_AUTOSIZING);
+        } else {
+            webView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.NORMAL);
+        }
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setSupportZoom(true);
+
         webView.getSettings().setJavaScriptEnabled(true);
 
         // 1. get passed intent

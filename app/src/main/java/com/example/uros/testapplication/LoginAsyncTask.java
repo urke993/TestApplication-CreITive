@@ -19,20 +19,12 @@ import java.net.URL;
 public class LoginAsyncTask extends AsyncTask{
 
     LoginActivity loginActivity;
-    private ProgressDialog dialog;
+
     String jsonString;
 
     public LoginAsyncTask(LoginActivity glavna,String jsonSting) {
         this.loginActivity = glavna;
         this.jsonString = jsonSting;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        dialog = new ProgressDialog(loginActivity);
-        dialog.setCancelable(true);
-        dialog.setMessage("Loading...");
-        dialog.show();
     }
 
     @Override
@@ -44,17 +36,6 @@ public class LoginAsyncTask extends AsyncTask{
 
     @Override
     protected void onPostExecute(Object o) {
-        Thread stoperica = new Thread(){
-            public void  run(){
-                try{
-                    sleep(700);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }finally {
-                    dialog.cancel();
-                }
-            }
-        };stoperica.start();
         loginActivity.continueLogin((HttpResponse) o);
     }
 
