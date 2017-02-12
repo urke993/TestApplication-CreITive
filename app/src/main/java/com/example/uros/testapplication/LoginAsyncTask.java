@@ -18,7 +18,6 @@ import java.net.URL;
  */
 public class LoginAsyncTask extends AsyncTask{
 
-
     LoginActivity loginActivity;
     private ProgressDialog dialog;
     String jsonString;
@@ -26,54 +25,41 @@ public class LoginAsyncTask extends AsyncTask{
     public LoginAsyncTask(LoginActivity glavna,String jsonSting) {
         this.loginActivity = glavna;
         this.jsonString = jsonSting;
-
     }
+
+    @Override
     protected void onPreExecute() {
-
-
         dialog = new ProgressDialog(loginActivity);
         dialog.setCancelable(true);
         dialog.setMessage("Loading...");
         dialog.show();
-
     }
 
-
-    // ova metoda je nit koja radi
     @Override
     protected Object doInBackground(Object[] params) {
-
-        String urlString = "http://blogsdemo.creitiveapps.com:16427/login";//ovo je kada se vuce iz lokala(localhhost) preko wamp servera
+        String urlString = "http://blogsdemo.creitiveapps.com:16427/login";
         HttpResponse response = makeRequest(urlString,jsonString);
         return response;
-
-
     }
 
-    //izlazni rezultat iz prethodne metode je ulaz u ovu metodu
     @Override
     protected void onPostExecute(Object o) {
-
         Thread stoperica = new Thread(){
             public void  run(){
                 try{
                     sleep(700);
-
                 }catch (InterruptedException e){
                     e.printStackTrace();
                 }finally {
-                    //prelaz na sledecu aktivnost i gasenje trenutne
                     dialog.cancel();
-
-
                 }
             }
         };stoperica.start();
         loginActivity.continueLogin((HttpResponse) o);
     }
+
     public static HttpResponse makeRequest(String uri, String json) {
         HttpURLConnection urlConnection;
-        String url;
         String data = json;
         String result = null;
         HttpResponse response = new HttpResponse();

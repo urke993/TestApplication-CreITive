@@ -1,10 +1,6 @@
 package com.example.uros.testapplication;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,19 +10,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by Uros on 2/11/2017.
+ * Created by Uros on 2/12/2017.
  */
-public class BlogListAsyncTask extends AsyncTask {
-
-    BlogListActivity blActivity;
+public class BlogDisplayAsyncTask extends AsyncTask{
+    BlogDisplayActivity blActivity;
     private String token;
-    public BlogListAsyncTask(BlogListActivity blActivity,String token) {
+    private String blogId;
+    public BlogDisplayAsyncTask(BlogDisplayActivity blActivity,String token,String blogId) {
         this.blActivity = blActivity;
         this.token = token;
+        this.blogId = blogId;
     }
     @Override
     protected Object doInBackground(Object[] params) {
-        String url = " http://blogsdemo.creitiveapps.com:16427/blogs";
+        StringBuilder stringBuilder = new StringBuilder("http://blogsdemo.creitiveapps.com:16427/blogs/").append(blogId);
+        String url = stringBuilder.toString();
         HttpResponse response = getAPIResponse(url,token);
         return response;
 
@@ -34,7 +32,7 @@ public class BlogListAsyncTask extends AsyncTask {
     @Override
     protected void onPostExecute(Object o) {
 
-        blActivity.fillListView((HttpResponse) o);
+        blActivity.fillDisplay((HttpResponse) o);
     }
     public static HttpResponse getAPIResponse(String urlString, String token){
         URL url;

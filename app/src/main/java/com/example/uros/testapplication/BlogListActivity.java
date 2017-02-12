@@ -11,6 +11,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -28,15 +29,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class BlogListActivity extends AppCompatActivity {
-
-    String[] arrayOfBlogId;
-    String[] arrayOfBlogTitle;
-    String[] arrayOfBlogImageUrl;
-    String[] arrayOfBlogDescription;
-    List<String> listOfBlogId = new ArrayList<>();
-    List<String> listOfBlogTitle = new ArrayList<>();
-    List<String> listOfBlogImageUrl = new ArrayList<>();
-    List<String> listOfBlogDescription = new ArrayList<>();
 
     List<Blog> listOfBlogs;
     public Blog[] arrayOfBlogs;
@@ -57,7 +49,24 @@ public class BlogListActivity extends AppCompatActivity {
         blogList = (ListView) findViewById(R.id.listViewBlogs);
         new BlogListAsyncTask(this,session.getToken()).execute();
 
+        blogList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                Blog chosenBlog = arrayOfBlogs[+position];
+                // 1. create an intent pass class name or intnet action name
+                Intent intent = new Intent("android.intent.action.BLOGDISPLAYACTIVITY");
+                // 2. put key/value data
+                intent.putExtra("blogIdMessage", chosenBlog.getBlogId());
+                // 5. start the activity
+                startActivity(intent);
+            }
+        });
     }
+
+
 
     public void fillListView(HttpResponse o) {
         if (!o.isSucess()){
@@ -78,11 +87,13 @@ public class BlogListActivity extends AppCompatActivity {
                     Blog newBlog =new Blog(idStr,title,imageUrl,description);
                     listOfBlogs.add(newBlog);
 
-                    arrayOfBlogs = listOfBlogs.toArray(new Blog[listOfBlogs.size()]);
 
-                    adapter = new CustomListAdapter(this, arrayOfBlogs);
+                    if ((jsonBlogArray.length()==(i+1))){
+                        arrayOfBlogs = listOfBlogs.toArray(new Blog[listOfBlogs.size()]);
+                        adapter = new CustomListAdapter(this, arrayOfBlogs);
 
-                    blogList.setAdapter(adapter);
+                        blogList.setAdapter(adapter);
+                    }
 
 
                 }
