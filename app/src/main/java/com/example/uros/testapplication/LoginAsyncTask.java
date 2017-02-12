@@ -1,8 +1,6 @@
 package com.example.uros.testapplication;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -19,7 +17,6 @@ import java.net.URL;
 public class LoginAsyncTask extends AsyncTask{
 
     LoginActivity loginActivity;
-
     String jsonString;
 
     public LoginAsyncTask(LoginActivity glavna,String jsonSting) {
@@ -30,8 +27,7 @@ public class LoginAsyncTask extends AsyncTask{
     @Override
     protected Object doInBackground(Object[] params) {
         String urlString = "http://blogsdemo.creitiveapps.com:16427/login";
-        HttpResponse response = makeRequest(urlString,jsonString);
-        return response;
+        return makeRequest(urlString,jsonString);
     }
 
     @Override
@@ -41,8 +37,7 @@ public class LoginAsyncTask extends AsyncTask{
 
     public static HttpResponse makeRequest(String uri, String json) {
         HttpURLConnection urlConnection;
-        String data = json;
-        String result = null;
+        String result;
         HttpResponse response = new HttpResponse();
         try {
             //Connect
@@ -56,7 +51,7 @@ public class LoginAsyncTask extends AsyncTask{
             //Write
             OutputStream outputStream = urlConnection.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-            writer.write(data);
+            writer.write(json);
             writer.close();
             outputStream.close();
 

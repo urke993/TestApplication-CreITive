@@ -8,7 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.JsonReader;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,8 +17,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.StringReader;
-import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private EditText etEmail,etPassword;
-    private Button btnLogin;
     private Session session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         session = new Session(this);
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
+        Button btnLogin = (Button) findViewById(R.id.btnLogin);
         if (session.loggedin()){
             session.setLoggedin(false,"Token doesn't exists");
         }
@@ -49,20 +46,20 @@ public class LoginActivity extends AppCompatActivity {
                 String password = etPassword.getText().toString();
                 if (eMail.matches("") || password.matches("")) {
                     Toast.makeText(getApplicationContext(), "Enter your email and password!", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     if (isEmailValid(eMail)) {
                         if (isPasswordValid(password)) {
-                            if(isOnline()){
-                                String jsonString =  makeJsonString(eMail,password);
-                                new LoginAsyncTask(LoginActivity.this,jsonString).execute();
-                            }else{
-                                showAlertDialog("No Internet Connection","You are offline, please check your internet connection.");
+                            if (isOnline()) {
+                                String jsonString = makeJsonString(eMail, password);
+                                new LoginAsyncTask(LoginActivity.this, jsonString).execute();
+                            } else {
+                                showAlertDialog("No Internet Connection", "You are offline, please check your internet connection.");
                             }
                         } else {
                             showAlertDialog("Invalid Password", "Password should be at least 6 characters long.");
                         }
                     } else {
-                        showAlertDialog("Invalid Email","Email should be in valid format(example@example.com).");
+                        showAlertDialog("Invalid Email", "Email should be in valid format(example@example.com).");
                     }
                 }
             }
@@ -77,11 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         return matcher.find();
     }
     public boolean isPasswordValid(String passString){
-        if(passString.length()<6){
-            return false;
-        }else{
-            return true;
-        }
+        return passString.length() >= 6;
     }
     public String makeJsonString(String eMail, String pass){
         JSONObject item = new JSONObject();
@@ -92,15 +85,14 @@ public class LoginActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String jsonString = item.toString();
-        return jsonString;
+        return item.toString();
     }
 
     public void continueLogin(HttpResponse o) {
         if (!o.isSucess()){
             Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();
         }else{
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(o.getMessage());
                 session.setLoggedin(true,jsonObject.getString("token"));

@@ -1,10 +1,7 @@
 package com.example.uros.testapplication;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -17,16 +14,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.koushikdutta.ion.Ion;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
 
 public class BlogListActivity extends AppCompatActivity {
 
@@ -72,7 +65,7 @@ public class BlogListActivity extends AppCompatActivity {
         if (!o.isSucess()){
             Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();
         }else{
-            JSONArray jsonBlogArray = null;
+            JSONArray jsonBlogArray;
 
             try {
                 jsonBlogArray = new JSONArray(o.getMessage());

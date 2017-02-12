@@ -2,11 +2,9 @@ package com.example.uros.testapplication;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ViewFlipper;
 
 import com.koushikdutta.ion.Ion;
 
@@ -32,9 +30,7 @@ public class ImageLoader extends AsyncTask {
         try {
             image = Ion.with(context).load(blog.getImageUrl()).withBitmap().asBitmap().get();
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return image;
@@ -43,7 +39,6 @@ public class ImageLoader extends AsyncTask {
     @Override
     protected void onPostExecute(Object o) {
         Bitmap image = (Bitmap) o;
-
         ImageView imageView = (ImageView) view.findViewById(R.id.ivBlogImage);
         imageView.setImageBitmap(image);
         blog.setImage(image);

@@ -4,12 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.webkit.WebSettings.LayoutAlgorithm;
 
@@ -57,7 +52,7 @@ public class BlogDisplayActivity extends AppCompatActivity {
         if (!o.isSucess()){
             Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();
         }else{
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(o.getMessage());
                 String htmlContent = jsonObject.getString("content");

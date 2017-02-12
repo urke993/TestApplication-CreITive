@@ -1,11 +1,6 @@
 package com.example.uros.testapplication;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,8 +22,7 @@ public class BlogListAsyncTask extends AsyncTask {
     @Override
     protected Object doInBackground(Object[] params) {
         String url = " http://blogsdemo.creitiveapps.com:16427/blogs";
-        HttpResponse response = getAPIResponse(url,token);
-        return response;
+        return getAPIResponse(url,token);
 
     }
     @Override
@@ -39,7 +33,7 @@ public class BlogListAsyncTask extends AsyncTask {
     public static HttpResponse getAPIResponse(String urlString, String token){
         URL url;
         HttpURLConnection urlConnection;
-        String result = null;
+        String result;
         HttpResponse response = new HttpResponse();
         try {
             url= new URL(urlString);
@@ -76,8 +70,6 @@ public class BlogListAsyncTask extends AsyncTask {
                     break;
             }
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
