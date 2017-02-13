@@ -1,6 +1,7 @@
 package com.example.uros.testapplication;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,8 +45,16 @@ public class BlogDisplayActivity extends AppCompatActivity {
         if (!session.loggedin()){
             finish();
         }
+        if (!session.isOnline(BlogDisplayActivity.this)){
+            session.showAlertDialog(BlogDisplayActivity.this,"No Internet Connection", "You are offline, please check your internet connection.");
+        }
+        NetworkStateReceiver networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.setBlogIdPassed(blogIdString);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        registerReceiver(networkStateReceiver, intentFilter);
 
-        new BlogDisplayAsyncTask(this,session.getToken(),blogIdString).execute();
     }
 
     public void fillDisplay(HttpResponse o) {

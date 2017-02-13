@@ -49,17 +49,17 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     if (isEmailValid(eMail)) {
                         if (isPasswordValid(password)) {
-                            if (isOnline()) {
+                            if (session.isOnline(LoginActivity.this)) {
                                 String jsonString = makeJsonString(eMail, password);
                                 new LoginAsyncTask(LoginActivity.this, jsonString).execute();
                             } else {
-                                showAlertDialog("No Internet Connection", "You are offline, please check your internet connection.");
+                                session.showAlertDialog(LoginActivity.this,"No Internet Connection", "You are offline, please check your internet connection.");
                             }
                         } else {
-                            showAlertDialog("Invalid Password", "Password should be at least 6 characters long.");
+                            session.showAlertDialog(LoginActivity.this,"Invalid Password", "Password should be at least 6 characters long.");
                         }
                     } else {
-                        showAlertDialog("Invalid Email", "Email should be in valid format(example@example.com).");
+                        session.showAlertDialog(LoginActivity.this,"Invalid Email", "Email should be in valid format(example@example.com).");
                     }
                 }
             }
@@ -108,25 +108,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-    public void showAlertDialog(String title,String message){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-        builder.setTitle(title);
-        builder.setMessage(message);
 
-        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-
-    }
 
 }

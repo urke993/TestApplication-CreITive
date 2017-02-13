@@ -2,6 +2,7 @@ package com.example.uros.testapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -39,8 +40,22 @@ public class BlogListActivity extends AppCompatActivity {
         if (!session.loggedin()){
             finish();
         }
-        blogList = (ListView) findViewById(R.id.listViewBlogs);
-        new BlogListAsyncTask(this,session.getToken()).execute();
+        if (!session.isOnline(BlogListActivity.this)){
+            session.showAlertDialog(BlogListActivity.this,"No Internet Connection", "You are offline, please check your internet connection.");
+        }
+
+
+            blogList = (ListView) findViewById(R.id.listViewBlogs);
+            adapter = new CustomListAdapter(this, arrayOfBlogs);
+
+
+            NetworkStateReceiver networkStateReceiver = new NetworkStateReceiver();
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+            intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+            registerReceiver(networkStateReceiver, intentFilter);
+
+
 
         blogList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -83,8 +98,7 @@ public class BlogListActivity extends AppCompatActivity {
 
                     if ((jsonBlogArray.length()==(i+1))){
                         arrayOfBlogs = listOfBlogs.toArray(new Blog[listOfBlogs.size()]);
-                        adapter = new CustomListAdapter(this, arrayOfBlogs);
-
+                        adapter = new CustomListAdapter(this,arrayOfBlogs);
                         blogList.setAdapter(adapter);
                     }
 
@@ -114,8 +128,14 @@ public class BlogListActivity extends AppCompatActivity {
         }
 
         public View getView(int position,View view,ViewGroup parent) {
-            LayoutInflater inflater=context.getLayoutInflater();
-            View rowView=inflater.inflate(R.layout.blog_list_cell, null, true);
+            View rowView =null;
+            if (view == null) {
+                LayoutInflater inflater=context.getLayoutInflater();
+               rowView =inflater.inflate(R.layout.blog_list_cell, null, true);
+
+            } else {
+                rowView = view;
+            }
 
             TextView txtTitle = (TextView) rowView.findViewById(R.id.tvBlogTitle);
             TextView txtDescription = (TextView) rowView.findViewById(R.id.tvBlogDescription);
@@ -129,6 +149,8 @@ public class BlogListActivity extends AppCompatActivity {
                 ImageView imageView = (ImageView) rowView.findViewById(R.id.ivBlogImage);
                 imageView.setImageBitmap(blog.getImage());
             }else {
+                ImageView imageView = (ImageView) rowView.findViewById(R.id.ivBlogImage);
+                imageView.setImageResource(android.R.color.transparent);
                 ImageLoader myImageLoader = new ImageLoader(BlogListActivity.this, blog, rowView);
                 myImageLoader.execute();
             }
