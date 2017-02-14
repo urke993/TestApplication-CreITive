@@ -26,6 +26,7 @@ public class BlogListActivity extends AppCompatActivity {
 
     List<Blog> listOfBlogs;
     public Blog[] arrayOfBlogs;
+    private NetworkStateReceiver networkStateReceiver;
 
     private Session session;
     private CustomListAdapter adapter;
@@ -45,16 +46,13 @@ public class BlogListActivity extends AppCompatActivity {
         }
 
 
-            blogList = (ListView) findViewById(R.id.listViewBlogs);
-            adapter = new CustomListAdapter(this, arrayOfBlogs);
+        blogList = (ListView) findViewById(R.id.listViewBlogs);
 
-
-            NetworkStateReceiver networkStateReceiver = new NetworkStateReceiver();
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-            intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
-            registerReceiver(networkStateReceiver, intentFilter);
-
+        networkStateReceiver = new NetworkStateReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        registerReceiver(networkStateReceiver, intentFilter);
 
 
         blogList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,6 +72,12 @@ public class BlogListActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
 
 
     public void fillListView(HttpResponse o) {
@@ -81,6 +85,7 @@ public class BlogListActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();
         }else{
             JSONArray jsonBlogArray;
+            listOfBlogs.clear();
 
             try {
                 jsonBlogArray = new JSONArray(o.getMessage());
@@ -104,8 +109,11 @@ public class BlogListActivity extends AppCompatActivity {
 
 
                 }
+                unregisterReceiver(networkStateReceiver);
 
             } catch (JSONException e) {
+                e.printStackTrace();
+            }catch (IllegalArgumentException e){
                 e.printStackTrace();
             }
 
@@ -159,5 +167,7 @@ public class BlogListActivity extends AppCompatActivity {
 
 
         };
+
+
     }
 }
