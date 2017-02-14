@@ -3,4 +3,5 @@
     <color name="colorPrimary">#1fbed5</color>
     <color name="colorPrimaryDark">#1fbed5</color>
     <color name="colorAccent">#1fbed5</color>
+    <color name="blackTestApp">#070707</color>
 </resources>

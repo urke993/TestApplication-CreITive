@@ -76,11 +76,25 @@ public class LoginAsyncTask extends AsyncTask{
                     response.setSucess(true);
 
                     break;
-                case 401:
-                    result = "Email or password incorect.";
+                case 406:
+                    result = "The media type is unsupported.";
                     response.setMessage(result);
                     response.setSucess(false);
-
+                    break;
+                case 415:
+                    result = "Content-Type is not application/json.";
+                    response.setMessage(result);
+                    response.setSucess(false);
+                    break;
+                case 400:
+                    result = "Forgot email or password.";
+                    response.setMessage(result);
+                    response.setSucess(false);
+                    break;
+                case 401:
+                    result = "Credentials are wrong.";
+                    response.setMessage(result);
+                    response.setSucess(false);
                     break;
             }
 

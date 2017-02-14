@@ -36,7 +36,9 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = (EditText) findViewById(R.id.etPassword);
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
         if (session.loggedin()){
-            session.setLoggedin(false,"Token doesn't exists");
+            Intent intent = new Intent("android.intent.action.BLOGLISTACTIVITY");
+            startActivity(intent);
+            finish();
         }
 
         btnLogin.setOnClickListener(new View.OnClickListener() {

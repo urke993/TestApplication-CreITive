@@ -42,6 +42,8 @@ public class BlogListActivity extends AppCompatActivity {
             finish();
         }
         if (!session.isOnline(BlogListActivity.this)){
+            adapter = new CustomListAdapter(this,new Blog[]{});
+            blogList.setAdapter(adapter);
             session.showAlertDialog(BlogListActivity.this,"No Internet Connection", "You are offline, please check your internet connection.");
         }
 

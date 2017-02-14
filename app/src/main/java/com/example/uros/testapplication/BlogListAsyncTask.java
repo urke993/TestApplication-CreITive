@@ -62,6 +62,16 @@ public class BlogListAsyncTask extends AsyncTask {
                     response.setSucess(true);
                     response.setMessage(result);
                     break;
+                case 406:
+                    result = "The media type is unsupported.";
+                    response.setMessage(result);
+                    response.setSucess(false);
+                    break;
+                case 415:
+                    result = "Content-Type is not application/json.";
+                    response.setMessage(result);
+                    response.setSucess(false);
+                    break;
                 case 401:
                     result = "Token is missing.";
                     response.setMessage(result);
