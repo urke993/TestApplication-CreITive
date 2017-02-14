@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.uros.testapplication;
 
 import android.app.Activity;
@@ -24,8 +40,8 @@ import java.util.List;
 
 public class BlogListActivity extends AppCompatActivity {
 
-    List<Blog> listOfBlogs;
-    public Blog[] arrayOfBlogs;
+    private List<Blog> listOfBlogs;
+    private Blog[] arrayOfBlogs;
     private NetworkStateReceiver networkStateReceiver;
 
     private Session session;
@@ -36,26 +52,21 @@ public class BlogListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blog_list);
         setTitle("Blog List");
+        blogList = (ListView) findViewById(R.id.listViewBlogs);
         listOfBlogs = new ArrayList<>();
         session = new Session(this);
+        //Checking if the user is logged in
         if (!session.loggedin()){
             finish();
         }
+        //Informing the user that there is no Internet connection
         if (!session.isOnline(BlogListActivity.this)){
             adapter = new CustomListAdapter(this,new Blog[]{});
             blogList.setAdapter(adapter);
             session.showAlertDialog(BlogListActivity.this,"No Internet Connection", "You are offline, please check your internet connection.");
         }
 
-
-        blogList = (ListView) findViewById(R.id.listViewBlogs);
-
-        networkStateReceiver = new NetworkStateReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
-        registerReceiver(networkStateReceiver, intentFilter);
-
+        getDataFromTheInternet();
 
         blogList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -64,24 +75,30 @@ public class BlogListActivity extends AppCompatActivity {
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 Blog chosenBlog = arrayOfBlogs[+position];
-                // 1. create an intent pass class name or intnet action name
                 Intent intent = new Intent("android.intent.action.BLOGDISPLAYACTIVITY");
-                // 2. put key/value data
                 intent.putExtra("blogIdMessage", chosenBlog.getBlogId());
-                // 5. start the activity
                 startActivity(intent);
             }
         });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
+    /**
+     * Registering the NetworkStateReceiver who gets the blog data from the Internet.
+     */
+    private void getDataFromTheInternet(){
+        networkStateReceiver = new NetworkStateReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        registerReceiver(networkStateReceiver, intentFilter);
     }
 
 
-
+    /**
+     * This method processing API response.
+     * If response is OK, JSON data is parsing and fill the ListView.
+     * If response is not OK, the message toasts to screen.
+     */
     public void fillListView(HttpResponse o) {
         if (!o.isSucess()){
             Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();

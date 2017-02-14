@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.uros.testapplication;
 
 import android.os.AsyncTask;
@@ -12,12 +28,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by Uros on 2/9/2017.
+ * Sending a POST request to server with username and password.
+ * Calling the continueLogin method in activity and sending the response as parameter.
  */
 public class LoginAsyncTask extends AsyncTask{
-
-    LoginActivity loginActivity;
-    String jsonString;
+    private LoginActivity loginActivity;
+    private String jsonString;
 
     public LoginAsyncTask(LoginActivity glavna,String jsonSting) {
         this.loginActivity = glavna;
@@ -35,6 +51,12 @@ public class LoginAsyncTask extends AsyncTask{
         loginActivity.continueLogin((HttpResponse) o);
     }
 
+    /**
+     *
+     * @param uri is used to open connection. That is address of API.
+     * @param json is passed as data i POST method
+     * @return HttpResonse
+     */
     public static HttpResponse makeRequest(String uri, String json) {
         HttpURLConnection urlConnection;
         String result;
@@ -47,34 +69,26 @@ public class LoginAsyncTask extends AsyncTask{
             urlConnection.setRequestProperty("Accept", "application/json");
             urlConnection.setRequestMethod("POST");
             urlConnection.connect();
-
             //Write
             OutputStream outputStream = urlConnection.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
             writer.write(json);
             writer.close();
             outputStream.close();
-
             int responseCode = urlConnection.getResponseCode();
-
             switch (responseCode){
                 case 200:
                     //Read
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
-
                     String line = null;
                     StringBuilder sb = new StringBuilder();
-
                     while ((line = bufferedReader.readLine()) != null) {
                         sb.append(line);
                     }
-
                     bufferedReader.close();
-
                     result = sb.toString();
                     response.setMessage(result);
                     response.setSucess(true);
-
                     break;
                 case 406:
                     result = "The media type is unsupported.";
@@ -97,9 +111,6 @@ public class LoginAsyncTask extends AsyncTask{
                     response.setSucess(false);
                     break;
             }
-
-
-
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
