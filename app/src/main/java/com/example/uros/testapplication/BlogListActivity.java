@@ -37,7 +37,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Shows the list of blogs in ListView. Adapter that is used for list is CustomListAdapter.
+ */
 public class BlogListActivity extends AppCompatActivity {
 
     private List<Blog> listOfBlogs;
@@ -130,16 +132,18 @@ public class BlogListActivity extends AppCompatActivity {
                 }
                 unregisterReceiver(networkStateReceiver);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }catch (IllegalArgumentException e){
+            } catch (JSONException | IllegalArgumentException e) {
                 e.printStackTrace();
             }
 
 
-
-       }
+        }
     }
+
+    /**
+     * This is custom adapter for list view used in BlogListActivity.
+     * It deals with blog objects.
+     */
     public class CustomListAdapter extends ArrayAdapter<Blog> {
 
         private final Activity context;
@@ -155,7 +159,7 @@ public class BlogListActivity extends AppCompatActivity {
         }
 
         public View getView(int position,View view,ViewGroup parent) {
-            View rowView =null;
+            View rowView;
             if (view == null) {
                 LayoutInflater inflater=context.getLayoutInflater();
                rowView =inflater.inflate(R.layout.blog_list_cell, null, true);
@@ -185,7 +189,7 @@ public class BlogListActivity extends AppCompatActivity {
 
 
 
-        };
+        }
 
 
     }

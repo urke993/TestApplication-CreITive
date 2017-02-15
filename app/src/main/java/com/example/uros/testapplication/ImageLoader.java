@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Downloading the image from the Internet in background.
  * Stores the image in blog object in array of blogs.
+ * It is called from CustomListAdapter.
  */
 public class ImageLoader extends AsyncTask {
     Context context;

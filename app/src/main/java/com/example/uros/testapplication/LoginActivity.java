@@ -31,6 +31,10 @@ import org.json.JSONObject;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Shows the login page to user, where user can enter username and password
+ * and login into system.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -46,11 +50,13 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = (EditText) findViewById(R.id.etEmail);
         etPassword = (EditText) findViewById(R.id.etPassword);
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
+        //If user is logged in previously this activity is passed right away.
         if (session.loggedin() && !session.getToken().equals("")){
             Intent intent = new Intent("android.intent.action.BLOGLISTACTIVITY");
             startActivity(intent);
             finish();
         }
+        //Starting login with email and password if they are in valid format. It calls async task.
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,15 +86,23 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     *This Method check if email is valid
+     *Checks if email is entered in valid format.
      */
     public boolean isEmailValid(String eMailString){
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(eMailString);
         return matcher.find();
     }
+
+    /**
+     *Checks if password is entered in valid format and returns true or false.
+     */
     public boolean isPasswordValid(String passString){
         return passString.length() >= 6;
     }
+
+    /**
+     *Creating String which contains one JSON object with email and password in it.
+     */
     public String makeJsonString(String eMail, String pass){
         JSONObject item = new JSONObject();
         try {
@@ -100,6 +114,10 @@ public class LoginActivity extends AppCompatActivity {
         return item.toString();
     }
 
+    /**
+     *Continue login after Login button pressed, and deals with server response.
+     * It's called from async task.
+     */
     public void continueLogin(HttpResponse o) {
         if (!o.isSucess()){
             Toast.makeText(getApplicationContext(), o.getMessage(), Toast.LENGTH_SHORT).show();

@@ -17,7 +17,7 @@
 package com.example.uros.testapplication;
 
 /**
- * Created by Uros on 2/10/2017.
+ * It is used to deal with server responses. If server response is OK sucess field is true and false if it's not OK.
  */
 public class HttpResponse {
     private boolean sucess;

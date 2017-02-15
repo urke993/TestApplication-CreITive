@@ -19,7 +19,7 @@ package com.example.uros.testapplication;
 import android.graphics.Bitmap;
 
 /**
- * Used like domain object for downloaded blogs.
+ * Used like domain object for downloaded blogs for blog list.
  */
 public class Blog {
     private String blogId;

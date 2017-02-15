@@ -25,7 +25,7 @@ import android.net.NetworkInfo;
 
 /**
  * This class is used to store user login data.
- * Checking the network connection.
+ * Also have method for checking the network connection and showing alert dialog.
  */
 public class Session {
 
@@ -53,11 +53,18 @@ public class Session {
         return prefs.getString("loginToken","");
     }
 
+    /**
+     * Checks if device is connected to network.
+     */
     public boolean isOnline(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
+    /**
+     *Shows alert dialog to the given context.
+     */
     public void showAlertDialog(Context context,String title,String message){
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);

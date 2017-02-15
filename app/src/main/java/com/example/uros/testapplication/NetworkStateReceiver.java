@@ -24,7 +24,8 @@ import android.net.NetworkInfo;
 import android.widget.Toast;
 
 /**
- * Created by Uros on 2/13/2017.
+ * Broadcast receiver that deals with Network(Internet) connection. Waiting for a change.
+ * If there is a connection it starts async task that send request to server.
  */
 public class NetworkStateReceiver extends BroadcastReceiver {
     private Session session;

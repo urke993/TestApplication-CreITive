@@ -26,8 +26,10 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-
+/**
+ * Shows html content in WebView. It register NetworkStateReceiver
+ * to deal with Network connection and sending request to server.
+ */
 public class BlogDisplayActivity extends AppCompatActivity {
 
     private Session session;
