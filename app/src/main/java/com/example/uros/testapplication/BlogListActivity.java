@@ -46,7 +46,6 @@ public class BlogListActivity extends AppCompatActivity {
     private Blog[] arrayOfBlogs;
     private NetworkStateReceiver networkStateReceiver;
 
-    private Session session;
     private CustomListAdapter adapter;
     ListView blogList;
     @Override
@@ -56,7 +55,7 @@ public class BlogListActivity extends AppCompatActivity {
         setTitle("Blog List");
         blogList = (ListView) findViewById(R.id.listViewBlogs);
         listOfBlogs = new ArrayList<>();
-        session = new Session(this);
+        Session session = new Session(this);
         //Checking if the user is logged in
         if (!session.loggedin()){
             finish();
@@ -65,7 +64,7 @@ public class BlogListActivity extends AppCompatActivity {
         if (!session.isOnline(BlogListActivity.this)){
             adapter = new CustomListAdapter(this,new Blog[]{});
             blogList.setAdapter(adapter);
-            session.showAlertDialog(BlogListActivity.this,"No Internet Connection", "You are offline, please check your internet connection.");
+            session.showAlertDialog(BlogListActivity.this, "No Internet Connection", "You are offline, please check your internet connection.");
         }
 
         getDataFromTheInternet();
@@ -83,6 +82,9 @@ public class BlogListActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 
     /**
      * Registering the NetworkStateReceiver who gets the blog data from the Internet.
@@ -156,8 +158,10 @@ public class BlogListActivity extends AppCompatActivity {
 
             this.context=context;
             this.arrayOfBlogs=arrayOfBlogs;
+
         }
 
+        @Override
         public View getView(int position,View view,ViewGroup parent) {
             View rowView;
             if (view == null) {
@@ -170,17 +174,15 @@ public class BlogListActivity extends AppCompatActivity {
 
             TextView txtTitle = (TextView) rowView.findViewById(R.id.tvBlogTitle);
             TextView txtDescription = (TextView) rowView.findViewById(R.id.tvBlogDescription);
+            ImageView imageView = (ImageView) rowView.findViewById(R.id.ivBlogImage);
             Blog blog = arrayOfBlogs[position];
-
 
             txtTitle.setText(blog.getTitle());
             txtDescription.setText(Html.fromHtml(blog.getDesription()));
             //Async task for downloading image
             if (blog.getImage()!=null){
-                ImageView imageView = (ImageView) rowView.findViewById(R.id.ivBlogImage);
                 imageView.setImageBitmap(blog.getImage());
             }else {
-                ImageView imageView = (ImageView) rowView.findViewById(R.id.ivBlogImage);
                 imageView.setImageResource(android.R.color.transparent);
                 ImageLoader myImageLoader = new ImageLoader(BlogListActivity.this, blog, rowView);
                 myImageLoader.execute();

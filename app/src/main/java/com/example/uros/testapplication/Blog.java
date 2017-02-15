@@ -28,9 +28,6 @@ public class Blog {
     private String desription;
     private Bitmap image;
 
-    public Blog() {
-    }
-
     public Blog(String blogId, String title, String imageUrl, String desription) {
         this.blogId = blogId;
         this.title = title;
@@ -42,32 +39,16 @@ public class Blog {
         return blogId;
     }
 
-    public void setBlogId(String blogId) {
-        this.blogId = blogId;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public String getDesription() {
         return desription;
-    }
-
-    public void setDesription(String desription) {
-        this.desription = desription;
     }
 
     public Bitmap getImage() {

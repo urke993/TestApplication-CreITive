@@ -32,7 +32,6 @@ import org.json.JSONObject;
  */
 public class BlogDisplayActivity extends AppCompatActivity {
 
-    private Session session;
     private String blogIdString;
 
     NetworkStateReceiver networkStateReceiver;
@@ -49,12 +48,12 @@ public class BlogDisplayActivity extends AppCompatActivity {
 
         getPassedData();
 
-        session = new Session(this);
+        Session session = new Session(this);
         if (!session.loggedin()){
             finish();
         }
         if (!session.isOnline(BlogDisplayActivity.this)){
-            session.showAlertDialog(BlogDisplayActivity.this,"No Internet Connection", "You are offline, please check your internet connection.");
+            session.showAlertDialog(BlogDisplayActivity.this, "No Internet Connection", "You are offline, please check your internet connection.");
         }
 
 
@@ -112,6 +111,7 @@ public class BlogDisplayActivity extends AppCompatActivity {
             JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(o.getMessage());
+                @SuppressWarnings("For some reason WebView crashes when toString() is not called after")
                 String htmlContent = jsonObject.getString("content").toString();
                 webView.loadData(changeHtmlContent(htmlContent), "text/html; charset=utf-8", "UTF-8");
             } catch (JSONException e) {

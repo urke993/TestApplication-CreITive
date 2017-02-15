@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -40,10 +39,8 @@ public class BlogDisplayAsyncTask extends AsyncTask{
     }
     @Override
     protected Object doInBackground(Object[] params) {
-        StringBuilder stringBuilder = new StringBuilder("http://blogsdemo.creitiveapps.com:16427/blogs/").append(blogId);
-        String url = stringBuilder.toString();
-        HttpResponse response = getAPIResponse(url,token);
-        return response;
+        String url = "http://blogsdemo.creitiveapps.com:16427/blogs/" + blogId;
+        return getAPIResponse(url,token);
 
     }
     @Override
@@ -60,8 +57,10 @@ public class BlogDisplayAsyncTask extends AsyncTask{
     public static HttpResponse getAPIResponse(String urlString, String token){
         URL url;
         HttpURLConnection urlConnection;
-        String result = null;
+        String result;
         HttpResponse response = new HttpResponse();
+        response.setSucess(false);
+        response.setMessage("Connection failed.");
         try {
             url= new URL(urlString);
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -77,7 +76,7 @@ public class BlogDisplayAsyncTask extends AsyncTask{
             switch (responseCode) {
                 case 200:
                     BufferedReader bf = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    String line = null;
+                    String line;
                     StringBuilder sb = new StringBuilder();
                     while ((line = bf.readLine()) != null) {
                         sb.append(line);
@@ -111,8 +110,6 @@ public class BlogDisplayAsyncTask extends AsyncTask{
                     break;
             }
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -8,8 +8,8 @@
     tools:context="com.example.uros.testapplication.BlogListActivity">
 
     <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:id="@+id/listViewBlogs"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />

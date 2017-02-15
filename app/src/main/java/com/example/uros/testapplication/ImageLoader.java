@@ -57,7 +57,7 @@ public class ImageLoader extends AsyncTask {
 
     @Override
     protected void onPostExecute(Object o) {
-        Bitmap image = getResizedBitmap((Bitmap) o,300,300);
+        Bitmap image = getResizedBitmap((Bitmap) o,450,450);
         ImageView imageView = (ImageView) view.findViewById(R.id.ivBlogImage);
         imageView.setImageBitmap(image);
         blog.setImage(image);
@@ -79,9 +79,8 @@ public class ImageLoader extends AsyncTask {
         matrix.postScale(scaleWidth, scaleHeight);
 
         // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height,
-                matrix, false);
 
-        return resizedBitmap;
+        return Bitmap.createBitmap(bm, 0, 0, width, height,
+                matrix, false);
     }
 }

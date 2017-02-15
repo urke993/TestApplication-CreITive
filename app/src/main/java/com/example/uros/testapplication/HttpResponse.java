@@ -26,11 +26,6 @@ public class HttpResponse {
     public HttpResponse() {
     }
 
-    public HttpResponse(String message, boolean sucess) {
-        this.message = message;
-        this.sucess = sucess;
-    }
-
     public boolean isSucess() {
         return sucess;
     }

@@ -19,24 +19,20 @@ package com.example.uros.testapplication;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.widget.Toast;
 
 /**
  * Broadcast receiver that deals with Network(Internet) connection. Waiting for a change.
  * If there is a connection it starts async task that send request to server.
  */
 public class NetworkStateReceiver extends BroadcastReceiver {
-    private Session session;
     private String blogIdPassed;
     @Override
     public void onReceive(Context context, Intent intent) {
-        session = new Session(context);
+        Session session = new Session(context);
 
         if (session.isOnline(context)){
             if (context instanceof BlogDisplayActivity){
-                new BlogDisplayAsyncTask((BlogDisplayActivity) context,session.getToken(),blogIdPassed).execute();
+                new BlogDisplayAsyncTask((BlogDisplayActivity) context, session.getToken(),blogIdPassed).execute();
             }else if (context instanceof BlogListActivity) {
                 new BlogListAsyncTask((BlogListActivity) context, session.getToken()).execute();
             }
